@@ -2,8 +2,6 @@ import { galleryItems } from "./gallery-items.js";
 
 // Change code below this line
 
-console.log(galleryItems);
-
 //1.Создание и рендер разметки
 const galleryCountainer = document.querySelector(".gallery");
 const markup = galleryItems

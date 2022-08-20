@@ -1,4 +1,71 @@
-import { galleryItems } from './gallery-items.js';
+import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-console.log(galleryItems);
+const galleryCountainer = document.querySelector(".gallery");
+const markup = galleryItems
+  .map(
+    ({ description, original, preview }) =>
+      `
+<div class="gallery__item">
+     <a class="gallery__link" href='${original}'>
+       <img
+         class="gallery__image"
+         src='${preview}'
+         data-source='${original}'
+        alt='${description}'
+       />
+    </a>
+  </div>
+`
+  )
+  .join("");
+
+galleryCountainer.insertAdjacentHTML("afterbegin", markup);
+
+console.log(galleryCountainer);
+
+//2. Реализация делегирования на div.gallery и получение url большого изображения.
+
+galleryCountainer.addEventListener("click", onImageClick);
+
+function onImageClick(event) {
+  event.preventDefault();
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+  let largeImageUrl = event.target.dataset.source;
+  let description = event.target.alt;
+
+  onOpenModal();
+}
+
+//3. Подключение скрипта и стилей библиотеки модального окна basicLightbox.
+
+//4. Открытие модального окна по клику на элементе галереи.
+
+let instance = null;
+
+function onOpenModal() {
+  window.addEventListener("keydown", onEscKeyPress);
+  //   var lightbox = new SimpleLightbox(".gallery a", {
+  //     /* options */
+  //   });
+  var lightbox = $(".gallery a").simpleLightbox({
+    /* options */
+  });
+}
+
+function onEscKeyPress(event) {
+  console.log("event.code", event.code);
+  const ESC_KEY_CODE = "Escape";
+  const isEscKey = event.code === ESC_KEY_CODE; //равенство в переменную
+
+  if (isEscKey) {
+    onCloseModal();
+  }
+}
+
+function onCloseModal() {
+  window.removeEventListener("keydown", onEscKeyPress);
+  instance.close();
+}
