@@ -1,12 +1,10 @@
 import { galleryItems } from "./gallery-items.js";
-// import * as basicLightbox from "https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.js";
 
 // Change code below this line
 
 console.log(galleryItems);
 
-//1.Создание и рендер разметки по массиву данных galleryItems и предоставленному шаблону элемента галереи.
-
+//1.Создание и рендер разметки
 const galleryCountainer = document.querySelector(".gallery");
 const markup = galleryItems
   .map(
@@ -32,76 +30,45 @@ console.log(galleryCountainer);
 
 //2. Реализация делегирования на div.gallery и получение url большого изображения.
 
-galleryCountainer.addEventListener("click", onClick);
+galleryCountainer.addEventListener("click", onImageClick);
 
-function onClick(event) {
+function onImageClick(event) {
   event.preventDefault();
   if (event.target.nodeName !== "IMG") {
     return;
   }
-  let largeImageUrl = event.srcElement.dataset.source;
-  console.log(largeImageUrl);
-  return largeImageUrl;
+  let largeImageUrl = event.target.dataset.source;
+  let description = event.target.alt;
+
+  onOpenModal(largeImageUrl, description);
 }
 
 //3. Подключение скрипта и стилей библиотеки модального окна basicLightbox.
-//Используй CDN сервис jsdelivr и добавь в проект ссылки на минифицированные(.min) файлы библиотеки.
-
-const instance = basicLightbox.create(`
-    <div class="modal">
-        <p>
-            Your first lightbox with just a few lines of code.
-            Yes, it's really that simple.
-        </p>
-    </div>
-`);
-instance.show();
 
 //4. Открытие модального окна по клику на элементе галереи.
 
-/*
- * 1. Открыть и закрыть по кнопке
- * 2. Закрыть по клику в бекдроп: onBackDropClick
- * 3. Закрыть по ESC: onEscapeKeypress
- *
- * В CSS есть класс show-modal, который необходимо добавить на body при открытии модалки
- */
+let instance = null;
 
-// const refs = {
-//   openModalBtn: document.querySelector('[data-action="open-modal"]'),
-//   closeModalBtn: document.querySelector('[data-action="close-modal"]'),
-//   backdrop: document.querySelector(".js-backdrop"),
-// };
+function onOpenModal(largeImageUrl, description) {
+  window.addEventListener("keydown", onEscKeyPress);
+  instance = basicLightbox.create(`
+  
+     <img src = '${largeImageUrl}' width = '800' height = '600' alt ='${description}'>
+  `);
+  instance.show();
+}
 
-// refs.openModalBtn.addEventListener("click", onOpenModal);
-// refs.closeModalBtn.addEventListener("click", onCloseModal);
-// refs.backdrop.addEventListener("click", onBackdropClick);
+function onEscKeyPress(event) {
+  console.log("event.code", event.code);
+  const ESC_KEY_CODE = "Escape";
+  const isEscKey = event.code === ESC_KEY_CODE; //равенство в переменную
 
-// function onOpenModal() {
-//   window.addEventListener("keydown", onEscKeyPress);
-//   document.body.classList.add("show-modal");
-// }
+  if (isEscKey) {
+    onCloseModal();
+  }
+}
 
-// function onCloseModal() {
-//   window.removeEventListener("keydown", onEscKeyPress);
-//   document.body.classList.remove("show-modal");
-// }
-
-// function onBackdropClick(event) {
-//   if (event.currentTarget === event.target) {
-//     console.log("Клик по бекдроп");
-//     onCloseModal();
-//   }
-// }
-
-// function onEscKeyPress(event) {
-//   console.log("event.code", event.code);
-//   const ESC_KEY_CODE = "Escape";
-//   const isEscKey = event.code === ESC_KEY_CODE; //равенство в переменную
-
-//   if (event.code === ESC_KEY_CODE) {
-//     onCloseModal();
-//   }
-// }
-
-//5. Замена значения атрибута src элемента <img> в модальном окне перед открытием. Используй готовую разметку модального окна с изображением из примеров библиотеки
+function onCloseModal() {
+  window.removeEventListener("keydown", onEscKeyPress);
+  instance.close();
+}
