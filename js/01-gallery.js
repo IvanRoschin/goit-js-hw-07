@@ -55,18 +55,13 @@ function onOpenModal(largeImageUrl, description) {
      <img src = '${largeImageUrl}' width = '800' height = '600' alt ='${description}'>
   `,
     {
-      onClose: () => window.removeEventListener("keydown", onEscKeyPress),
+      onClose: () => window.removeEventListener("keydown", onEscKeyPress), // Как проверить?
     }
   );
   instance.show();
-  console.log("Удалил слушатель по клику");
 }
 
-galleryCountainer.removeEventListener("click", onEscKeyPress);
-console.log("удалили по клику");
-
 function onEscKeyPress(event) {
-  console.log("event.code", event.code);
   const ESC_KEY_CODE = "Escape";
   const isEscKey = event.code === ESC_KEY_CODE; //равенство в переменную
 
