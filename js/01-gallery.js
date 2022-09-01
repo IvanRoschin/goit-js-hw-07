@@ -1,6 +1,7 @@
 import { galleryItems } from "./gallery-items.js";
 
 // Change code below this line
+let instance;
 
 //1.Создание и рендер разметки
 const galleryCountainer = document.querySelector(".gallery");
@@ -35,6 +36,8 @@ function onImageClick(event) {
   if (event.target.nodeName !== "IMG") {
     return;
   }
+  window.addEventListener("keydown", onEscKeyPress);
+
   let largeImageUrl = event.target.dataset.source;
   let description = event.target.alt;
 
@@ -45,14 +48,18 @@ function onImageClick(event) {
 
 //4. Открытие модального окна по клику на элементе галереи.
 
-let instance = null;
-
 function onOpenModal(largeImageUrl, description) {
-  instance = basicLightbox.create(`
+  instance = basicLightbox.create(
+    `
   
      <img src = '${largeImageUrl}' width = '800' height = '600' alt ='${description}'>
-  `);
+  `,
+    {
+      onClose: () => window.removeEventListener("keydown", onEscKeyPress),
+    }
+  );
   instance.show();
+  console.log("Удалил слушатель по клику");
 }
 
 galleryCountainer.removeEventListener("click", onEscKeyPress);
@@ -65,7 +72,7 @@ function onEscKeyPress(event) {
 
   if (isEscKey) {
     window.removeEventListener("keydown", onEscKeyPress);
-    console.log("удалили по еск");
+    console.log("Удалил слушатель по клику ESC");
 
     instance.close();
   }
