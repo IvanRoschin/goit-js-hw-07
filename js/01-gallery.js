@@ -48,7 +48,6 @@ function onImageClick(event) {
 let instance = null;
 
 function onOpenModal(largeImageUrl, description) {
-  window.addEventListener("keydown", onEscKeyPress);
   instance = basicLightbox.create(`
   
      <img src = '${largeImageUrl}' width = '800' height = '600' alt ='${description}'>
@@ -56,17 +55,18 @@ function onOpenModal(largeImageUrl, description) {
   instance.show();
 }
 
+galleryCountainer.removeEventListener("click", onEscKeyPress);
+console.log("удалили по клику");
+
 function onEscKeyPress(event) {
   console.log("event.code", event.code);
   const ESC_KEY_CODE = "Escape";
   const isEscKey = event.code === ESC_KEY_CODE; //равенство в переменную
 
   if (isEscKey) {
-    onCloseModal();
-  }
-}
+    window.removeEventListener("keydown", onEscKeyPress);
+    console.log("удалили по еск");
 
-function onCloseModal() {
-  window.removeEventListener("keydown", onEscKeyPress);
-  instance.close();
+    instance.close();
+  }
 }
